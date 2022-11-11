@@ -8,6 +8,7 @@ public class Game {
     private Player player1;
     private Player player2;
     private GameStatus status;
-    private int [][] board;
+//    private int [][] board;
+    private CaroBoard board;
     private TicToe winner;
 }
