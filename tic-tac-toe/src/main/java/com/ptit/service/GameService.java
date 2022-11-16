@@ -1,21 +1,25 @@
 package com.ptit.service;
 
+import com.ptit.AlphaBetaPrunning;
 import com.ptit.exception.InvalidGameExeption;
 import com.ptit.exception.InvalidParamException;
 import com.ptit.exception.NotFoundException;
 import com.ptit.model.*;
+import com.ptit.repository.PlayerRepository;
 import com.ptit.storage.GameStorage;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.awt.*;
-import java.util.UUID;
 
 import static com.ptit.model.GameStatus.*;
 
 @Service
 @AllArgsConstructor
 public class GameService {
+    @Autowired
+    PlayerRepository playerRepository;
     public Game createGame(Player player) {
         Game game = new Game();
         game.setBoard(new CaroBoard(20));
@@ -42,6 +46,20 @@ public class GameService {
         return game;
     }
 
+    public Game connectToAI(Player player2, String gameId) throws InvalidGameExeption, InvalidParamException {
+        if(!GameStorage.getInstance().getGames().containsKey(gameId)) {
+            throw new InvalidParamException("Game with provided id doesn't exist");
+        }
+        Game game = GameStorage.getInstance().getGames().get(gameId);
+        if(game.getPlayer2() != null) {
+            throw new InvalidGameExeption("Game is not valid anymore");
+        }
+        game.setPlayer2(player2);
+        game.setStatus(IN_PROGRESS);
+        GameStorage.getInstance().setGame(game);
+        return game;
+    }
+
     public Game connectToRandomGame(Player player2) throws  NotFoundException {
         Game game = GameStorage.getInstance().getGames().values().stream()
                 .filter(it -> it.getStatus().equals(NEW))
@@ -51,7 +69,7 @@ public class GameService {
         GameStorage.getInstance().setGame(game);
         return game;
     }
-    public Game AIPlay(GamePlay gamePlay) throws NotFoundException, InvalidGameExeption {
+    public Game AIPlay(GamePlay gamePlay, AlphaBetaPrunning alphaBetaPrunning) throws NotFoundException, InvalidGameExeption {
 
 
         int maxdepth = 6;
@@ -70,16 +88,14 @@ public class GameService {
         }
         int[][] board = game.getBoard().getSquare();
         board[gamePlay.getCoordinateX()][gamePlay.getCoordinateY()] = gamePlay.getType().getValue();
-        System.out.println("Start Alphabeta");
-        AlphaBetaPrunning ai = new AlphaBetaPrunning(20, maxdepth);
+//        AlphaBetaPrunning ai = new AlphaBetaPrunning(20, maxdepth);
 
         CaroBoard caroBoard = new CaroBoard(20);
         caroBoard = game.getBoard();
-        Point p = ai.search(caroBoard);
-
-
-//        Point p = ai.search(game.getBoard());
-        System.out.println("End Alphabeta");
+        System.out.println("bắt đầu tìm kiếm");
+//        Point p = alphaBetaPrunning.search(caroBoard);
+        Point p = alphaBetaPrunning.search(game.getBoard());
+        System.out.println("Kết thúc tìm kiếm ");
         board[p.x][p.y] = 2;
         caroBoard.set(p.x, p.y, 2);
 //        game.getBoard().set(p.x, p.y, 2);
@@ -94,6 +110,8 @@ public class GameService {
 
                     System.out.println("NguoiWIN");
                     game.setWinner(TicToe.X);
+                    game.getPlayer1().setScore(100);
+                    playerRepository.save(game.getPlayer1());
                 }
                 if(yWinner == 1) {
                     System.out.println("AIWIN");

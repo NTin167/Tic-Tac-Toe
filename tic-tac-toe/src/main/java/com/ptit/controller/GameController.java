@@ -1,5 +1,6 @@
 package com.ptit.controller;
 
+import com.ptit.AlphaBetaPrunning;
 import com.ptit.controller.dto.ConnectRequest;
 import com.ptit.exception.InvalidGameExeption;
 import com.ptit.exception.InvalidParamException;
@@ -55,7 +56,8 @@ public class GameController {
     @PostMapping("/AIgameplay")
     public ResponseEntity<Game> AIplay(@RequestBody GamePlay request) throws NotFoundException, InvalidGameExeption {
         log.info("gameplay: {}", request);
-        Game game = gameService.AIPlay(request);
+        AlphaBetaPrunning alphaBetaPrunning = new AlphaBetaPrunning(20, 4);
+        Game game = gameService.AIPlay(request, alphaBetaPrunning);
         return ResponseEntity.ok(game);
     }
 }

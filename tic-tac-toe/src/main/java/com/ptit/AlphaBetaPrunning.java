@@ -1,7 +1,9 @@
-package com.ptit.service;
+package com.ptit;
 
 import com.ptit.model.CaroBoard;
 import com.ptit.model.State;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Service;
 
 import java.awt.*;
 import java.util.ArrayList;
