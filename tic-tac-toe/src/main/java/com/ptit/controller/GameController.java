@@ -8,6 +8,8 @@ import com.ptit.exception.NotFoundException;
 import com.ptit.model.Game;
 import com.ptit.model.GamePlay;
 import com.ptit.model.Player;
+import com.ptit.security.CurrentUser;
+import com.ptit.security.UserPrincipal;
 import com.ptit.service.GameService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,9 +30,9 @@ public class GameController {
     @PostMapping("/start")
     public ResponseEntity<Game> start(@RequestBody Player player) {
         log.info("start game request: {}", player);
+//        System.out.println(currentUser.getName());
         return ResponseEntity.ok(gameService.createGame(player));
     }
-
 
 
     @PostMapping("/connect")
@@ -40,9 +42,9 @@ public class GameController {
     }
 
     @PostMapping("/connect/random")
-    public ResponseEntity<Game> connectRandom(@RequestBody Player player) throws NotFoundException {
+    public ResponseEntity<Game> connectRandom(@RequestBody Player player,@CurrentUser UserPrincipal user2) throws NotFoundException {
         log.info("connect random {}", player);
-        return ResponseEntity.ok(gameService.connectToRandomGame(player));
+        return ResponseEntity.ok(gameService.connectToRandomGame(player, user2));
     }
 
     @PostMapping("/gameplay")
@@ -56,7 +58,7 @@ public class GameController {
     @PostMapping("/AIgameplay")
     public ResponseEntity<Game> AIplay(@RequestBody GamePlay request) throws NotFoundException, InvalidGameExeption {
         log.info("gameplay: {}", request);
-        AlphaBetaPrunning alphaBetaPrunning = new AlphaBetaPrunning(20, 4);
+        AlphaBetaPrunning alphaBetaPrunning = new AlphaBetaPrunning(20, 1);
         Game game = gameService.AIPlay(request, alphaBetaPrunning);
         return ResponseEntity.ok(game);
     }

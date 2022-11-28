@@ -1,0 +1,143 @@
+:root {
+    --header-height: 56px;
+    --primary-color: #008df0;
+    --secondary-color: #38b6ff;
+    --white-color: white;
+    --text-color: #333;
+    --chess-x-color: #0069b5;
+    --chess-o-color: #f0b803;
+    --gold-medal-color: #f1a400;
+    --silver-medal-color: #acacac;
+    --bronze-medal-color: #6a6a6a;
+}
+
+* {
+    box-sizing: inherit;
+}
+
+html {
+    font-size: 62.5%;
+    line-height: 1.6rem;
+    font-family: 'Roboto', sans-serif;
+    box-sizing: border-box;
+}
+
+.mt-16 {
+    margin-top: 16px;
+}
+
+.mb-16 {
+    margin-bottom: 16px;
+}
+
+.hide {
+    display: none!important;
+}
+
+.hide-modal {
+    z-index: -9;
+}
+
+.bold {
+    font-weight: 500;
+}
+
+.heading-h1 {
+    font-size: 2rem;
+    color: var(--text-color);
+}
+
+.gold-medal {
+    color: var(--gold-medal-color);
+}
+
+.silver-medal {
+    color: var(--silver-medal-color);
+}
+
+.bronze-medal {
+    color: var(--bronze-medal-color);
+}
+
+/* Modal */
+.modal {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    display: flex;
+    animation: fadeIn linear 0.1s;
+}
+
+.modal__overlay {
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    background-color: rgba(0, 0, 0, 0.35);
+}
+
+.modal__body {
+    --growth-from: 0.7;
+    --growth-to: 1;
+    position: relative;
+    margin: auto;
+    z-index: 1;
+    animation: growth linear 0.1s;
+}
+
+/* Button style */
+.btn {
+    padding: 0 12px;
+    height: 34px;
+    min-width: 120px;
+    color: var(--text-color);
+    font-size: 1.4rem;
+    color: var(--text-color);
+    text-decoration: none;
+    background-color: var(--white-color);
+    border-radius: 2px;
+    border: none;
+    cursor: pointer;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    line-height: 1.6rem;
+}
+
+.btn.btn--primary {
+    color: var(--white-color);
+    background-color: var(--primary-color);
+}
+
+.btn.btn--size-s {
+    height: 32px;
+    padding: 8px;
+}
+.btn.btn--size-l {
+    height: 40px;
+    padding: 16px;
+    width: 440px;
+}
+
+.btn:hover {
+    opacity: 0.9;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes growth {
+    from {
+        transform: scale(--growth-from);
+    }
+    to {
+        transform: scale(--growth-to);
+    }
+}

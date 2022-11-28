@@ -452,6 +452,6 @@ public class AlphaBetaPrunning {
      * Check valid
      */
     public boolean CheckPoint(int x, int y) {
-        return (x >= 0 && y >= 0 && x < 20 && y < 20);
+        return (x >= 0 && y >= 0 && x < 19 && y < 19);
     }
 }

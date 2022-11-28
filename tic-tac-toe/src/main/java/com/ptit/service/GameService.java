@@ -6,12 +6,14 @@ import com.ptit.exception.InvalidParamException;
 import com.ptit.exception.NotFoundException;
 import com.ptit.model.*;
 import com.ptit.repository.PlayerRepository;
+import com.ptit.security.UserPrincipal;
 import com.ptit.storage.GameStorage;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.awt.*;
+import java.util.UUID;
 
 import static com.ptit.model.GameStatus.*;
 
@@ -20,12 +22,15 @@ import static com.ptit.model.GameStatus.*;
 public class GameService {
     @Autowired
     PlayerRepository playerRepository;
+    @Autowired
+    PlayerService playerService;
     public Game createGame(Player player) {
         Game game = new Game();
         game.setBoard(new CaroBoard(20));
-//        game.setGameId(UUID.randomUUID().toString());
-        game.setGameId("1");
+        game.setGameId(UUID.randomUUID().toString());
+//        game.setGameId("1");
         game.setPlayer1(player);
+//        game.getPlayer1().setLogin(user.getUsername());
         game.setStatus(NEW);
         GameStorage.getInstance().setGame(game);
         return game;
@@ -60,20 +65,17 @@ public class GameService {
         return game;
     }
 
-    public Game connectToRandomGame(Player player2) throws  NotFoundException {
+    public Game connectToRandomGame(Player player2, UserPrincipal user) throws  NotFoundException {
         Game game = GameStorage.getInstance().getGames().values().stream()
                 .filter(it -> it.getStatus().equals(NEW))
                 .findFirst().orElseThrow(() -> new NotFoundException("Game not found"));
         game.setPlayer2(player2);
+        game.getPlayer2().setLogin(user.getUsername());
         game.setStatus(IN_PROGRESS);
         GameStorage.getInstance().setGame(game);
         return game;
     }
     public Game AIPlay(GamePlay gamePlay, AlphaBetaPrunning alphaBetaPrunning) throws NotFoundException, InvalidGameExeption {
-
-
-        int maxdepth = 6;
-
         if (!GameStorage.getInstance().getGames().containsKey(gamePlay.getGameId())) {
             throw new NotFoundException("Game not found");
         }
@@ -110,12 +112,13 @@ public class GameService {
 
                     System.out.println("NguoiWIN");
                     game.setWinner(TicToe.X);
-                    game.getPlayer1().setScore(100);
-                    playerRepository.save(game.getPlayer1());
+                    playerService.updateScore(game.getPlayer1());
+                    break;
                 }
                 if(yWinner == 1) {
                     System.out.println("AIWIN");
                     game.setWinner(TicToe.O);
+                    break;
                 }
             }
         }
@@ -147,10 +150,14 @@ public class GameService {
 
                     System.out.println("xWIN");
                     game.setWinner(TicToe.X);
+                    playerService.updateScore(game.getPlayer1());
+                    break;
                 }
                 if(yWinner == 1) {
                     System.out.println("yWin");
                     game.setWinner(TicToe.O);
+                    playerService.updateScore(game.getPlayer2());
+                    break;
                 }
             }
         }
@@ -319,32 +326,5 @@ public class GameService {
 
     public boolean CheckPoint(int x, int y) {
         return (x >= 0 && y >= 0 && x < 20 && y < 20);
-    }
-
-
-    // Xóa đoạn dưới
-    private Boolean checkWinner(int[][] board, TicToe ticToe) {
-        int[] boardArray = new int[9];
-        int counterIndex = 0;
-        for (int i = 0; i < board.length; i++) {
-            for (int j = 0; j < board[i].length; j++) {
-                boardArray[counterIndex] = board[i][j];
-                counterIndex++;
-            }
-        }
-
-        int[][] winCombinations = {{0, 1, 2}, {3, 4, 5}, {6, 7, 8}, {0, 3, 6}, {1, 4, 7}, {2, 5, 8}, {0, 4, 8}, {2, 4, 6}};
-        for (int i = 0; i < winCombinations.length; i++) {
-            int counter = 0;
-            for (int j = 0; j < winCombinations[i].length; j++) {
-                if (boardArray[winCombinations[i][j]] == ticToe.getValue()) {
-                    counter++;
-                    if (counter == 3) {
-                        return true;
-                    }
-                }
-            }
-        }
-        return false;
     }
 }
