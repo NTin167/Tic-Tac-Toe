@@ -153,10 +153,48 @@ function connectToSpecificGame() {
 
 $("#name-play").onkeypress = function(event) {
     if(event.which == 13 || event.keyCode == 13) {
-        closeModal();
-        this.classList.add("hide")
-        $(".game__main").classList.remove("hide");
         var loginName = $("#name-play").value;
-        create_gameAi(loginName);
+        if(loginName == ""){
+            alert("Vui lòng nhập tên!");
+        }
+        else {
+            loginName = loginName.replaceAll(" ","");
+            if(loginName == ""){
+                alert("Vui lòng nhập tên!");
+            }
+            else {
+                closeModal();
+                $(".enter-name-form").classList.add("hide");
+                $(".register").classList.add("hide");
+                $(".login").classList.add("hide");
+                $(".user-ele").classList.remove("hide");
+                $(".user-name").innerText = loginName;
+                $(".game__main").classList.remove("hide");
+                create_gameAi(loginName);
+            }
+        }
+    }
+}
+
+$(".btn-enter-name").onclick = function(event) {
+    var loginName = $("#name-play").value;
+    if(loginName == ""){
+        alert("Vui lòng nhập tên!");
+    }
+    else {
+        loginName = loginName.replaceAll(" ","");
+        if(loginName == ""){
+            alert("Vui lòng nhập tên!");
+        }
+        else {
+            closeModal();
+            $(".enter-name-form").classList.add("hide");
+            $(".register").classList.add("hide");
+            $(".login").classList.add("hide");
+            $(".user-ele").classList.remove("hide");
+            $(".user-name").innerText = loginName;
+            $(".game__main").classList.remove("hide");
+            create_gameAi(loginName);
+        }
     }
 }

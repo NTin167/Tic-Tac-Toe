@@ -124,6 +124,10 @@ html {
     opacity: 0.9;
 }
 
+.background-grey {
+    background-color: #f1f3f5;
+}
+
 @keyframes fadeIn {
     from {
         opacity: 0;

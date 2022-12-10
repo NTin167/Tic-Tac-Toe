@@ -58,8 +58,7 @@ public class GameController {
     @PostMapping("/AIgameplay")
     public ResponseEntity<Game> AIplay(@RequestBody GamePlay request) throws NotFoundException, InvalidGameExeption {
         log.info("gameplay: {}", request);
-        AlphaBetaPrunning alphaBetaPrunning = new AlphaBetaPrunning(20, 1);
-        Game game = gameService.AIPlay(request, alphaBetaPrunning);
+        Game game = gameService.AIPlayTest(request);
         return ResponseEntity.ok(game);
     }
 }

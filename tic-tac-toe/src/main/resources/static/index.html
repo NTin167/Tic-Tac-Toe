@@ -56,7 +56,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tic Tac Toe</title>
+    <title>Caro</title>
     <link rel="icon" type="image/x-icon" href="./img/favicon.png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css" integrity="sha512-NhSC1YmyruXifcj/KFRWoC561YpHpc5Jtzgvbuzx5VozKpWvQ+4nXhPdFgmx8xqexRcpAglTj9sIBWINXa8x5w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" integrity="sha512-xh6O/CkQoPOWDdYTDqeRdPCVd1SpvCA9XXcUnZS2FmJNp1coAFzvtCN9BmamE+4aHK8yyUHUSCcJHgXloTyT2A==" crossorigin="anonymous" referrerpolicy="no-referrer"/>
@@ -115,12 +115,12 @@
                             </a>
 
                         </li>
-                        <li class="navbar-item bold">
+                        <li class="navbar-item register bold">
                             <a href="" class="navbar-item-link">
                                 Đăng ký
                             </a>
                         </li>
-                        <li class="navbar-item bold">
+                        <li class="navbar-item login bold">
                             <a href="" class="navbar-item-link">
                                 Đăng nhập
                             </a>
@@ -147,6 +147,12 @@
                                     </form>
                                   </div>
                             </div> -->
+                        </li>
+                        <li class="navbar-item user-ele bold hide">
+                            <div class="user-info">
+                                <img src="https://blog.cpanel.com/wp-content/uploads/2019/08/user-01.png" alt="" class="user-img">
+                                <span class="user-name"></span>
+                            </div>
                         </li>
                     </ul>
                 </nav>
@@ -680,9 +686,34 @@
             </div>
         </div>
     </div>
-    <div class="app__footer">
+    <div class="guide background-grey">
         <div class="grid wide">
-
+            <div class="row">
+                <div class="col l-8 l-o-2">
+                    <div class="guide-content">
+                        <h2 class="guide-heading">Cờ caro</h2>
+                        <p class="guide-description">Cờ caro là trò chơi chiến lược từ xa xưa còn được biết đến là "năm điểm trên một hàng". Trò chơi rất đơn giản ngay cả trong các quy tắc và hình thức nên được chơi bởi cả người lớn và trẻ em.</p>
+                        <p class="guide-description">Trò chơi bao gồm một bàn 20x20 với tổng số 400 ô, và một số quân cờ "X" và "O". Các quân cờ phải được đặt trên ô cờ và không chấp nhận trường hợp đi vào các đường kẻ trên bàn cờ.</p>
+                        <h2 class="guide-heading">Người chơi cho trò chơi cờ caro</h2>
+                        <p class="guide-description">Bạn là một trong hai người chơi, thi đấu theo hình thức 1 chọi 1.</p>
+                        <h2 class="guide-heading">Quy tắc</h2>
+                        <p class="guide-description">Người chơi có quân cờ "X" luôn chơi đầu tiên. Người chơi quân cờ "O" di chuyển bằng cách đặt quân cờ tại một trong các ô cờ còn lại. Người chơi cờ "X" sau đó phản ứng với nước đi vừa rồi của quân "O" và cứ thế cho đến khi có năm quân cờ cùng màu xuất hiện theo các hướng: dọc, ngang hoặc đường chéo. Khi một người chơi có 5 quân cờ liền kề theo các hướng này, ván đấu sẽ kết thúc ngay cả khi vẫn còn các thế cờ khác. Trong trò chơi cờ caro, người bắt đầu có một chút lợi thế hơn so với đối thủ: Do đó, tốt nhất là nên được sắp xếp thứ tự đi trước xen kẽ để không có người chơi nào được ưu tiên. Mỗi người chơi chỉ có một lần di chuyển ở mỗi lượt. Sau khi đã đi, không thể đi lại hoặc xóa nước đi khỏi bàn đấu.</p>
+                        <h2 class="guide-heading">Mục đích</h2>
+                        <p class="guide-description">Mục đích của trò chơi là có thể sắp xếp năm quân cờ cùng loại theo ba hướng được cho phép</p>
+                        <h2 class="guide-heading">Lịch sử</h2>
+                        <p class="guide-description">Có vẻ như cờ caro đã hơn 4000 năm tuổi và các quy tắc của nó đã được phát triển ở Trung Quốc. Có bằng chứng về các quy tắc chơi tương tự ở Hy Lạp cổ đại và Mỹ thời tiền Columbus. Trò chơi còn được gọi là "Kakugo" (nghĩa là nhiều hơn hoặc ít hơn "năm bước" trong tiếng Nhật), được mô tả trong một tác phẩm từ năm 100 sau Công Nguyên. Dường như vào thế kỷ thứ 18, mọi người Nhật đều biết đến các quy tắc của trò chơi cờ caro. Tập đầu tiên về trò chơi này vẫn được gọi là Kakugo và xuất hiện vào năm 1858. Chúng tôi hy vọng bạn sẽ thấy phấn khích khi biết về lịch sử của trò chơi cờ caro này!</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="app__footer" style="background-color: #e5e7e8">
+        <div class="grid wide">
+            <div class="row" style="">
+                <div class="col l-12" style="text-align: center; font-size: 1.6rem; margin-top: 40px">
+                    <span class="copyrigh">© 2022 Copyright</span>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -785,7 +816,25 @@
             <div class="auth-form__container">
                 <div class="auth-form__form">
                     <div class="auth-form__group">
-                        <input type="text" name="" id="name-play" class="auth-form__input mb-16" placeholder="Nhập biệt danh của bạn và ấn enter">
+                        <label for="" class="label-name">Bạn là ai?</label>
+                        <input type="text" name="" id="name-play" class="auth-form__input mb-16" placeholder="Nhập biệt danh của bạn">
+                        <div class="wrap-btn-enter-name">
+                            <button class="btn btn--primary btn-enter-name">Tiếp tục</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Form mark -->
+        <div class="auth-form mark-form hide">
+            <div class="auth-form__container">
+                <div class="auth-form__form noti_win">
+                    <p class="label-win hide">Bạn đã<br/><br/><br/><br/><span>Thắng!</span></p>
+                    <p class="label-lose hide">Bạn đã<br/><br/><br/><br/><span>Thua!</span></p>
+                    <div class="btns_win">
+                        <div class="btn btn--primary btn-playing">Chơi tiếp</div>
+                        <div class="btn btn--secondary btn-exit">Thoát</div>
                     </div>
                 </div>
             </div>

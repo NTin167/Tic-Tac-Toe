@@ -15,12 +15,19 @@ public class PlayerService {
 
     Player updateScore(Player player) {
         Player player1 = playerRepository.findByLogin(player.getLogin())
-                .orElseThrow(() -> new ResourceNotFoundException("login", "login", player.getLogin()));
+                .orElse(player1 = new Player());
+        player1.setLogin(player.getLogin());
         player1.setScore(player1.getScore() + 100);
         playerRepository.save(player1);
         return player1;
     }
-
-
+    Player findPlayerByLogin(Player player) {
+        Player player1 = playerRepository.findByLogin(player.getLogin())
+                  .orElse(player1 = player);
+        player1.setLogin(player.getLogin());
+        player1.setScore(player1.getScore());
+        playerRepository.save(player1);
+        return player1;
+    }
 }
 

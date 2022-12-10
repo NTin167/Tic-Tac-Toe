@@ -75,32 +75,97 @@ public class GameService {
         GameStorage.getInstance().setGame(game);
         return game;
     }
-    public Game AIPlay(GamePlay gamePlay, AlphaBetaPrunning alphaBetaPrunning) throws NotFoundException, InvalidGameExeption {
+
+    public Game AIPlayTest(GamePlay gamePlay) throws NotFoundException, InvalidGameExeption {
         if (!GameStorage.getInstance().getGames().containsKey(gamePlay.getGameId())) {
             throw new NotFoundException("Game not found");
         }
-
         Game game = GameStorage.getInstance().getGames().get(gamePlay.getGameId());
-        Player player = new Player();
-        player.setLogin("AI");
-        game.setPlayer2(player);
+        game.setPlayer1(playerService.findPlayerByLogin(game.getPlayer1()));
+        game.getPlayer1().setScore(playerService.findPlayerByLogin(game.getPlayer1()).getScore());
         game.setStatus(GameStatus.IN_PROGRESS);
         if (game.getStatus().equals(FINISHED)) {
             throw new InvalidGameExeption("Game is already finished");
         }
+        System.out.println(game.getPlayer1().getScore());
+        int maxdepth = (int) (game.getPlayer1().getScore() / 100);
+        System.out.println("Maxdept" + maxdepth);
         int[][] board = game.getBoard().getSquare();
         board[gamePlay.getCoordinateX()][gamePlay.getCoordinateY()] = gamePlay.getType().getValue();
-//        AlphaBetaPrunning ai = new AlphaBetaPrunning(20, maxdepth);
-
-        CaroBoard caroBoard = new CaroBoard(20);
-        caroBoard = game.getBoard();
-        System.out.println("bắt đầu tìm kiếm");
-//        Point p = alphaBetaPrunning.search(caroBoard);
+        if(check(board) == 1) {
+            game.setWinner(TicToe.X);
+            playerService.updateScore(game.getPlayer1());
+            GameStorage.getInstance().setGame(game);
+            return game;
+        }
+        AlphaBetaPrunning alphaBetaPrunning = new AlphaBetaPrunning(20, maxdepth);
+        CaroBoard caroBoard = game.getBoard();
         Point p = alphaBetaPrunning.search(game.getBoard());
-        System.out.println("Kết thúc tìm kiếm ");
         board[p.x][p.y] = 2;
         caroBoard.set(p.x, p.y, 2);
+        if(check(board) == 2)  {
+            game.setWinner(TicToe.O);
+            playerService.updateScore(game.getPlayer1());
+            GameStorage.getInstance().setGame(game);
+            return game;
+        }
+
+
+        GameStorage.getInstance().setGame(game);
+        return game;
+    }
+
+    public int check(int [][] board) {
+        int xWinner = 0;
+        int yWinner = 0;
+        for (int i = 0; i < 20; i++) {
+            for (int j = 0; j < 20; j++) {
+                final int a = i, b = j;
+                xWinner = checkWin(board, a, b, 1);
+                yWinner = checkWin(board, a, b, 2);
+                if (xWinner == 1) {
+                    return 1;
+                }
+                if (yWinner == 1) {
+                    return 2;
+                }
+            }
+        }
+        return -1;
+    }
+    public Game AIPlay(GamePlay gamePlay) throws NotFoundException, InvalidGameExeption {
+        if (!GameStorage.getInstance().getGames().containsKey(gamePlay.getGameId())) {
+            throw new NotFoundException("Game not found");
+        }
+        Game game = GameStorage.getInstance().getGames().get(gamePlay.getGameId());
+//        Player player = new Player();
+//        player.setLogin("AI");
+//        game.setPlayer2(player);
+        game.setStatus(GameStatus.IN_PROGRESS);
+        if (game.getStatus().equals(FINISHED)) {
+            throw new InvalidGameExeption("Game is already finished");
+        }
+        // nguoi danh
+        int[][] board = game.getBoard().getSquare();
+        board[gamePlay.getCoordinateX()][gamePlay.getCoordinateY()] = gamePlay.getType().getValue();
+
+        // AI danh'
+        int maxdepth = 0;
+        AlphaBetaPrunning alphaBetaPrunning = new AlphaBetaPrunning(20, maxdepth);
+        if(game.getWinner() == null) {
+            CaroBoard caroBoard = game.getBoard();
+            System.out.println("bắt đầu tìm kiếm");
+            Point p = alphaBetaPrunning.search(game.getBoard());
+            System.out.println("Kết thúc tìm kiếm ");
+            board[p.x][p.y] = 2;
+            caroBoard.set(p.x, p.y, 2);
 //        game.getBoard().set(p.x, p.y, 2);
+        }
+        else {
+            GameStorage.getInstance().setGame(game);
+            System.out.println("next line 109");
+            return game;
+        }
         int xWinner = 0;
         int yWinner = 0;
         for(int i=0; i<20; i++){
@@ -109,21 +174,27 @@ public class GameService {
                 xWinner = checkWin(game.getBoard().getSquare(), a, b, 1);
                 yWinner = checkWin(game.getBoard().getSquare(), a, b, 2);
                 if(xWinner == 1) {
-
                     System.out.println("NguoiWIN");
                     game.setWinner(TicToe.X);
-                    playerService.updateScore(game.getPlayer1());
                     break;
                 }
                 if(yWinner == 1) {
-                    System.out.println("AIWIN");
+                    System.out.println(game.getPlayer1().getScore());
                     game.setWinner(TicToe.O);
                     break;
                 }
             }
         }
+        if(game.getWinner() == TicToe.O) {
 
-
+            game.getPlayer1().setScore(game.getPlayer1().getScore() + 100);
+            System.out.println(game.getPlayer1().getScore());
+        }
+//        else if(game.getWinner().getValue() == 2) {
+//            game.getPlayer1().setScore(game.getPlayer1().getScore() - 100);
+//        }
+        GameStorage.getInstance().setGame(game);
+        System.out.println("Set game again");
         return game;
     }
     public Game gamePlay(GamePlay gamePlay) throws NotFoundException, InvalidGameExeption {

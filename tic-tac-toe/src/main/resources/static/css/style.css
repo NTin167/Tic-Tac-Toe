@@ -53,13 +53,6 @@ h1 {
     border-radius: 5px;
 }
 
-.o {
-    color: green !important;
-}
-
-.x {
-    color: red !important;
-}
 
 footer {
     display: block;
@@ -137,6 +130,8 @@ footer {
 .navbar-list {
     list-style: none;
     display: flex;
+    justify-content: center;
+    align-items: center
 }
 
 .navbar-item {
@@ -193,6 +188,29 @@ footer {
 .header__noti-heading {
 }
 
+.user-info {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.user-info:hover {
+    /* color: rgba(255, 255, 255, 0.5); */
+    opacity: 0.8;
+    cursor: pointer;
+}
+
+.user-img {
+    width: 32px;
+    height: 32px;
+    transform: translateY(-1px);
+}
+
+.user-name {
+    color: var(--white-color);
+    font-size: 1.6rem;
+    margin-left: 4px;
+}
 
 /* Login form */
 .center{
@@ -382,17 +400,6 @@ input[type="submit"]:hover{
     margin-top: 50px;
 }
 
-.cell {
-    border: solid 1px var(--primary-color);
-    text-align: center;
-    font-size: 3.0rem;
-    color: red;
-}
-
-.cell:hover {
-    cursor: pointer;
-    background-color: rgba(255, 255, 255, 0.01);
-}
 
 #game__board {
     margin-left: auto;
@@ -404,7 +411,7 @@ input[type="submit"]:hover{
     height: 800px;
 }
 
-#game__board li {
+.tic {
     float: left;
     margin: 2px;
     height: 36px;
@@ -416,7 +423,7 @@ input[type="submit"]:hover{
     display: flex;
     justify-content: center;
     align-items: center;
-    color: red;
+    color: rgb(0, 4, 255);
 }
 
 #game__board li:hover {
@@ -425,11 +432,11 @@ input[type="submit"]:hover{
 }
 
 .o {
-    color: green !important;
+    color: rgb(255, 115, 0) !important;
 }
 
 .x {
-    color: red !important;
+    color: rgb(0, 4, 255) !important;
 }
 
 /* Auth-form */
@@ -470,11 +477,26 @@ input[type="submit"]:hover{
     font-size: 1.2rem;
     border: 1px solid #ccc;
     border-radius: 2px;
-    outline: none;
+    outline: var(--primary-color) solid 1px;
 }
 
 .auth-form__input:focus {
     border-color: #888;
+}
+
+.label-name {
+    font-size: 4rem;
+    color: var(--text-color);
+    margin-top: 20px;
+    display: block;
+    margin-bottom: 12px;
+}
+
+.wrap-btn-enter-name {
+    display: block;
+    text-align: center;
+    margin-top: 20px;
+    margin-bottom: 12px;
 }
 
 .auth-form__outside {
@@ -556,6 +578,55 @@ input[type="submit"]:hover{
     margin: 0 16px;
 }
 
+.label-win {
+    font-size: 3rem;
+    text-align: center;
+    margin-top: 50px;
+}
+
+.label-win span {
+    font-size: 5rem;
+    color: var(--primary-color);
+}
+
+.btns_win {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 50px;
+    margin-bottom: 20px;
+}
+
+.label-lose {
+    font-size: 3rem;
+    text-align: center;
+    margin-top: 50px;
+}
+
+.label-lose span {
+    font-size: 5rem;
+    color: red;
+}
+
+.strong {
+    background-color: #00e0f0;
+}
+
+.guide {
+    margin-top: 48px;
+}
+
+.guide-heading {
+    font-size: 2.6rem;
+    color: var(--text-color);
+    margin-top: 32px;
+    font-weight: 500;
+}
+
+.guide-description {
+    font-size: 1.6rem;
+    color: var(--text-color);
+    font-weight: 400;
+}
 
 /* Footer */
 
