@@ -24,6 +24,29 @@ var turns = [
     ["", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""],
     ["", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""]
 ];
+var ts = [
+     ["", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""],
+     ["", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""],
+     ["", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""],
+     ["", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""],
+     ["", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""],
+     ["", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""],
+     ["", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""],
+     ["", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""],
+     ["", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""],
+     ["", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""],
+     ["", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""],
+     ["", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""],
+     ["", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""],
+     ["", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""],
+     ["", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""],
+     ["", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""],
+     ["", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""],
+     ["", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""],
+     ["", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""],
+     ["", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", ""]
+ ];
+
 var gameOn = false;
 var gameAi = false;
 
@@ -58,6 +81,7 @@ $(".btn-play-ai").onclick = function() {
 }
 
 $(".btn-playing").onclick = function() {
+    reset();
     closeModal();
     $(".mark-form").classList.add("hide")
     $(".game__main").classList.remove("hide");
@@ -67,6 +91,7 @@ $(".btn-playing").onclick = function() {
 }
 
 $(".btn-exit").onclick = function() {
+    reset();
     closeModal();
     $(".mark-form").classList.add("hide")
     $(".game__main").classList.add("hide");
@@ -83,7 +108,13 @@ function playerTurn(turn, id) {
                 console.log("no click")
             }
         });
-            document.getElementById(id).innerText = "X"
+        for (let i = 0; i < 20; i++) {
+            for (let j = 0; j < 20; j++) {
+                document.getElementById(i + "_" + j).classList.remove("strong");
+                console.log("remove claas strong")
+            }
+        }
+        document.getElementById(id).innerText = "X";
         console.log("gameAi: " + gameAi)
             if(gameAi){
                 makeAMoveAi(playerType, id.split("_")[0], id.split("_")[1]);
@@ -143,7 +174,7 @@ function displayResponse(data) {
     for (let i = 0; i < board.length; i++) {
         for (let j = 0; j < board[i].length; j++) {
             if (board[i][j] === 1) {
-                turns[i][j] = 'X'
+                turns[i][j] = 'X';
             } else if (board[i][j] === 2) {
                 turns[i][j] = 'O';
             }
@@ -160,16 +191,37 @@ function displayResponse(data) {
 function displayResponseAi(data) {
     let board = data.board.square;
     let winner = data.winner;
+    for (let i = 0; i < 20; i++) {
+        for (let j = 0; j < 20; j++) {
+            ts[i][j] = turns[i][j];
+        }
+    }
+    console.log(ts);
     for (let i = 0; i < board.length; i++) {
         for (let j = 0; j < board[i].length; j++) {
             if (board[i][j] === 1) {
                 turns[i][j] = 'X';
                 document.getElementById(i + "_" + j).classList.add("x");
+                document.getElementById(i + "_" + j).classList.add("no-hover");
                 document.getElementById(i + "_" + j).innerText = 'X';
             } else if (board[i][j] === 2) {
                 turns[i][j] = 'O';
                 document.getElementById(i + "_" + j).classList.add("o");
+                document.getElementById(i + "_" + j).classList.add("no-hover");
                 document.getElementById(i + "_" + j).innerText = 'O';
+            }
+        }
+    }
+    for (let i = 0; i < 20; i++) {
+        for (let j = 0; j < 20; j++) {
+            if(ts[i][j] != turns[i][j] && turns[i][j] === 'O') {
+                let idtemp = i + "_" + j;
+                console.log(idtemp);
+                let z = document.getElementById(idtemp);
+                z.classList.add("strong");
+                console.log(z);
+//                let z = document.getElementById(i + "_" + j);
+//                z.setAttribute("style", "background-color:blue");
             }
         }
     }
@@ -177,6 +229,7 @@ function displayResponseAi(data) {
         for (let i = 0; i < 20; i++) {
             for (let j = 0; j < 20; j++) {
                 let id = i + "_" + j;
+                document.getElementById(i + "_" + j).classList.remove("no-hover");
                 document.getElementById(id).innerText = turns[i][j];
             }
         }
@@ -187,11 +240,12 @@ function displayResponseAi(data) {
             $(".mark-form").classList.remove("hide");
             if(winner === "X") {
                 $(".label-win").classList.remove("hide");
+                $(".label-lose").classList.add("hide");
             }
             else {
+                $(".label-win").classList.add("hide");
                 $(".label-lose").classList.remove("hide");
             }
-            reset();
     }, 1000)
     }
     gameAi = true;

@@ -26,11 +26,11 @@ public class GameService {
     PlayerService playerService;
     public Game createGame(Player player) {
         Game game = new Game();
+        Player player1 = playerRepository.findByLogin(player.getLogin()).orElse(player);
         game.setBoard(new CaroBoard(20));
-        game.setGameId(UUID.randomUUID().toString());
-//        game.setGameId("1");
-        game.setPlayer1(player);
-//        game.getPlayer1().setLogin(user.getUsername());
+//        game.setGameId(UUID.randomUUID().toString());
+        game.setGameId("1");
+        game.setPlayer1(player1);
         game.setStatus(NEW);
         GameStorage.getInstance().setGame(game);
         return game;
@@ -69,8 +69,9 @@ public class GameService {
         Game game = GameStorage.getInstance().getGames().values().stream()
                 .filter(it -> it.getStatus().equals(NEW))
                 .findFirst().orElseThrow(() -> new NotFoundException("Game not found"));
+
         game.setPlayer2(player2);
-        game.getPlayer2().setLogin(user.getUsername());
+//        game.getPlayer2().setLogin(user.getUsername());
         game.setStatus(IN_PROGRESS);
         GameStorage.getInstance().setGame(game);
         return game;
@@ -81,31 +82,29 @@ public class GameService {
             throw new NotFoundException("Game not found");
         }
         Game game = GameStorage.getInstance().getGames().get(gamePlay.getGameId());
-        game.setPlayer1(playerService.findPlayerByLogin(game.getPlayer1()));
-        game.getPlayer1().setScore(playerService.findPlayerByLogin(game.getPlayer1()).getScore());
         game.setStatus(GameStatus.IN_PROGRESS);
         if (game.getStatus().equals(FINISHED)) {
             throw new InvalidGameExeption("Game is already finished");
         }
         System.out.println(game.getPlayer1().getScore());
-        int maxdepth = (int) (game.getPlayer1().getScore() / 100);
+        double maxdepth = (double) Math.round(game.getPlayer1().getScore() / 100);
         System.out.println("Maxdept" + maxdepth);
         int[][] board = game.getBoard().getSquare();
         board[gamePlay.getCoordinateX()][gamePlay.getCoordinateY()] = gamePlay.getType().getValue();
         if(check(board) == 1) {
             game.setWinner(TicToe.X);
-            playerService.updateScore(game.getPlayer1());
+            playerService.winScore(game.getPlayer1());
             GameStorage.getInstance().setGame(game);
             return game;
         }
-        AlphaBetaPrunning alphaBetaPrunning = new AlphaBetaPrunning(20, maxdepth);
+        AlphaBetaPrunning alphaBetaPrunning = new AlphaBetaPrunning(20, (int)maxdepth);
         CaroBoard caroBoard = game.getBoard();
         Point p = alphaBetaPrunning.search(game.getBoard());
         board[p.x][p.y] = 2;
         caroBoard.set(p.x, p.y, 2);
         if(check(board) == 2)  {
             game.setWinner(TicToe.O);
-            playerService.updateScore(game.getPlayer1());
+            playerService.loseScore(game.getPlayer1());
             GameStorage.getInstance().setGame(game);
             return game;
         }
@@ -133,70 +132,63 @@ public class GameService {
         }
         return -1;
     }
-    public Game AIPlay(GamePlay gamePlay) throws NotFoundException, InvalidGameExeption {
-        if (!GameStorage.getInstance().getGames().containsKey(gamePlay.getGameId())) {
-            throw new NotFoundException("Game not found");
-        }
-        Game game = GameStorage.getInstance().getGames().get(gamePlay.getGameId());
-//        Player player = new Player();
-//        player.setLogin("AI");
-//        game.setPlayer2(player);
-        game.setStatus(GameStatus.IN_PROGRESS);
-        if (game.getStatus().equals(FINISHED)) {
-            throw new InvalidGameExeption("Game is already finished");
-        }
-        // nguoi danh
-        int[][] board = game.getBoard().getSquare();
-        board[gamePlay.getCoordinateX()][gamePlay.getCoordinateY()] = gamePlay.getType().getValue();
-
-        // AI danh'
-        int maxdepth = 0;
-        AlphaBetaPrunning alphaBetaPrunning = new AlphaBetaPrunning(20, maxdepth);
-        if(game.getWinner() == null) {
-            CaroBoard caroBoard = game.getBoard();
-            System.out.println("bắt đầu tìm kiếm");
-            Point p = alphaBetaPrunning.search(game.getBoard());
-            System.out.println("Kết thúc tìm kiếm ");
-            board[p.x][p.y] = 2;
-            caroBoard.set(p.x, p.y, 2);
-//        game.getBoard().set(p.x, p.y, 2);
-        }
-        else {
-            GameStorage.getInstance().setGame(game);
-            System.out.println("next line 109");
-            return game;
-        }
-        int xWinner = 0;
-        int yWinner = 0;
-        for(int i=0; i<20; i++){
-            for(int j=0; j<20; j++) {
-                final int a = i, b = j;
-                xWinner = checkWin(game.getBoard().getSquare(), a, b, 1);
-                yWinner = checkWin(game.getBoard().getSquare(), a, b, 2);
-                if(xWinner == 1) {
-                    System.out.println("NguoiWIN");
-                    game.setWinner(TicToe.X);
-                    break;
-                }
-                if(yWinner == 1) {
-                    System.out.println(game.getPlayer1().getScore());
-                    game.setWinner(TicToe.O);
-                    break;
-                }
-            }
-        }
-        if(game.getWinner() == TicToe.O) {
-
-            game.getPlayer1().setScore(game.getPlayer1().getScore() + 100);
-            System.out.println(game.getPlayer1().getScore());
-        }
-//        else if(game.getWinner().getValue() == 2) {
-//            game.getPlayer1().setScore(game.getPlayer1().getScore() - 100);
+//    public Game AIPlay(GamePlay gamePlay) throws NotFoundException, InvalidGameExeption {
+//        if (!GameStorage.getInstance().getGames().containsKey(gamePlay.getGameId())) {
+//            throw new NotFoundException("Game not found");
 //        }
-        GameStorage.getInstance().setGame(game);
-        System.out.println("Set game again");
-        return game;
-    }
+//        Game game = GameStorage.getInstance().getGames().get(gamePlay.getGameId());
+//        game.setStatus(GameStatus.IN_PROGRESS);
+//        if (game.getStatus().equals(FINISHED)) {
+//            throw new InvalidGameExeption("Game is already finished");
+//        }
+//        // nguoi danh
+//        int[][] board = game.getBoard().getSquare();
+//        board[gamePlay.getCoordinateX()][gamePlay.getCoordinateY()] = gamePlay.getType().getValue();
+//
+//        // AI danh'
+//        int maxdepth = 0;
+//        AlphaBetaPrunning alphaBetaPrunning = new AlphaBetaPrunning(20, maxdepth);
+//        if(game.getWinner() == null) {
+//            CaroBoard caroBoard = game.getBoard();
+//            System.out.println("bắt đầu tìm kiếm");
+//            Point p = alphaBetaPrunning.search(game.getBoard());
+//            System.out.println("Kết thúc tìm kiếm ");
+//            board[p.x][p.y] = 2;
+//            caroBoard.set(p.x, p.y, 2);
+//        }
+//        else {
+//            GameStorage.getInstance().setGame(game);
+//            System.out.println("next line 109");
+//            return game;
+//        }
+//        int xWinner = 0;
+//        int yWinner = 0;
+//        for(int i=0; i<20; i++){
+//            for(int j=0; j<20; j++) {
+//                final int a = i, b = j;
+//                xWinner = checkWin(game.getBoard().getSquare(), a, b, 1);
+//                yWinner = checkWin(game.getBoard().getSquare(), a, b, 2);
+//                if(xWinner == 1) {
+//                    System.out.println("NguoiWIN");
+//                    game.setWinner(TicToe.X);
+//                    break;
+//                }
+//                if(yWinner == 1) {
+//                    System.out.println(game.getPlayer1().getScore());
+//                    game.setWinner(TicToe.O);
+//                    break;
+//                }
+//            }
+//        }
+//        if(game.getWinner() == TicToe.O) {
+//
+//            game.getPlayer1().setScore(game.getPlayer1().getScore() + 100);
+//            System.out.println(game.getPlayer1().getScore());
+//        }
+//        GameStorage.getInstance().setGame(game);
+//        System.out.println("Set game again");
+//        return game;
+//    }
     public Game gamePlay(GamePlay gamePlay) throws NotFoundException, InvalidGameExeption {
         if (!GameStorage.getInstance().getGames().containsKey(gamePlay.getGameId())) {
             throw new NotFoundException("Game not found");
@@ -221,28 +213,17 @@ public class GameService {
 
                     System.out.println("xWIN");
                     game.setWinner(TicToe.X);
-                    playerService.updateScore(game.getPlayer1());
+                    playerService.updatePlayerWin(game.getPlayer1().getLogin());
                     break;
                 }
                 if(yWinner == 1) {
                     System.out.println("yWin");
                     game.setWinner(TicToe.O);
-                    playerService.updateScore(game.getPlayer2());
+                    playerService.updatePlayerLose(game.getPlayer2());
                     break;
                 }
             }
         }
-
-
-//        Boolean xWinner = checkWinner(game.getBoard().getSquare(), TicToe.X);
-//        Boolean oWinner = checkWinner(game.getBoard().getSquare(), TicToe.O);
-
-//        if (xWinner) {
-//            game.setWinner(TicToe.X);
-//        } else if (oWinner) {
-//            game.setWinner(TicToe.O);
-//        }
-
         System.out.println(board);
         GameStorage.getInstance().setGame(game);
         return game;

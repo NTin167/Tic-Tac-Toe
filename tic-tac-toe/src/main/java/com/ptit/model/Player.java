@@ -19,4 +19,10 @@ public class Player {
     private String login;
     @Column(name = "score")
     private double score;
+    @Column(name = "win")
+    private double win;
+    @Column(name = "lose")
+    private double lose;
+    @Column(name = "draw")
+    private double draw;
 }

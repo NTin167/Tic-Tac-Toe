@@ -424,11 +424,17 @@ input[type="submit"]:hover{
     justify-content: center;
     align-items: center;
     color: rgb(0, 4, 255);
+    user-select: none;
 }
 
-#game__board li:hover {
+.tic:hover {
     background-color: var(--primary-color);
     cursor: pointer;
+}
+
+.no-hover {
+    background-color: var(--secondary-color);
+    cursor: text;
 }
 
 .o {
