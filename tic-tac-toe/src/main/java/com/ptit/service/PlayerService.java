@@ -4,8 +4,11 @@ import com.ptit.model.Player;
 import com.ptit.repository.PlayerRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -72,6 +75,12 @@ public class PlayerService {
                     playerData.setLose(player.getLose() + 1);
                     return playerData;
                 });
+    }
+
+    public List<Player> getAllPlayers() {
+        List<Player> playerList = new ArrayList<Player>();
+        playerRepository.findAll().forEach(player -> playerList.add(player));
+        return playerList;
     }
 }
 

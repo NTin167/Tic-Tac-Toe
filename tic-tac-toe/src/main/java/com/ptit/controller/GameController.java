@@ -11,12 +11,15 @@ import com.ptit.model.Player;
 import com.ptit.security.CurrentUser;
 import com.ptit.security.UserPrincipal;
 import com.ptit.service.GameService;
+import com.ptit.service.PlayerService;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @Slf4j
@@ -25,7 +28,14 @@ import org.springframework.web.bind.annotation.*;
 public class GameController {
 
     private final GameService gameService;
+    private final PlayerService playerService;
     private final SimpMessagingTemplate simpMessagingTemplate;
+
+    @GetMapping("/getAllPlayer")
+    public List<Player> getAll() {
+
+        return playerService.getAllPlayers();
+    }
 
     @PostMapping("/start")
     public ResponseEntity<Game> start(@RequestBody Player player) {
