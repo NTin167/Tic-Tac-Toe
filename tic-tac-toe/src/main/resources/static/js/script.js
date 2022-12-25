@@ -102,9 +102,18 @@ $(".btn-play-ai").onclick = function() {
         $(".game__select").classList.add("hide");
         var loginName = $(".user-name").innerText;
         $(".x-name").innerText = loginName;
+        $(".o-name").innerText = "AI";
         $(".player").classList.remove("hide");
         $(".game__main").classList.remove("hide");
+        tic.forEach(element => {
+            element.onclick = function () {
+                var slot = this.getAttribute("id");
+                playerTurn(turn, slot);
+            }
+        });
         create_gameAi(loginName);
+        $(".player-x-img").classList.add("rainbow");
+        $(".player-o-img").classList.remove("rainbow");
     }
 }
 
@@ -121,24 +130,49 @@ $(".btn-play-random").onclick = function() {
     }
 }
 
+$(".btn-play-friend").onclick = function() {
+    if($(".user-ele").classList.contains("hide")){
+        alert("Vui lòng đăng nhập!");
+    }else {
+        openModal();
+        $(".enter-id-room").classList.remove("hide");
+    }
+}
+
+$(".btn-create-game").onclick = function() {
+    if($(".user-ele").classList.contains("hide")){
+        alert("Vui lòng đăng nhập!");
+    }else {
+        create_game($(".user-name").innerText);
+    }
+}
+
+$(".btn-enter-id").onclick = function() {
+    let id_room = $("#id-room").value.replaceAll(" ","");
+    if(id_room == ""){
+        alert("ID phòng không tôn tại!");
+    }
+    else {
+        connectToSpecificGame($(".user-name").innerText, id_room);
+    }
+}
+
+
 $(".btn-playing").onclick = function() {
+    reset();
+    closeModal();
+    $(".mark-form").classList.add("hide");
+    $(".game__main").classList.remove("hide");
+    var loginName = $(".user-name").innerText;
     if(gameAi) {
-        reset();
-        closeModal();
-        $(".mark-form").classList.add("hide")
-        $(".game__main").classList.remove("hide");
-        var loginName = $(".user-name").innerText;
         create_gameAi(loginName);
     }
     else {
-        reset();
-        closeModal();
-        $(".mark-form").classList.add("hide")
-        $(".game__main").classList.remove("hide");
-        var loginName = $(".user-name").innerText;
         connectToRandom(loginName);
     }
 }
+
+
 
 $(".btn-exit").onclick = function() {
     reset();
@@ -189,6 +223,8 @@ function playerTurn(turn, id) {
             else {
                 if(playerType == "X") {
                     console.log("toi luot X");
+                    $(".player-x-img").classList.remove("rainbow");
+                    $(".player-o-img").classList.add("rainbow");
                     tic.forEach(element => {
                         element.onclick = function () {
                             console.log("no click");
@@ -198,6 +234,8 @@ function playerTurn(turn, id) {
                 }
                 if(playerType == "O") {
                     console.log("toi luot O");
+                    $(".player-x-img").classList.add("rainbow");
+                    $(".player-o-img").classList.remove("rainbow");
                     tic.forEach(element => {
                         element.onclick = function () {
                             console.log("no click");
@@ -232,7 +270,7 @@ function makeAMove(type, xCoordinate, yCoordinate) {
 }
 
 function makeAMoveAi(type, xCoordinate, yCoordinate) {
-    fetch("http://localhost:2020/game/AIgameplay", {
+    fetch("http://localhost:8080/game/AIgameplay", {
         method: 'POST',
         headers: {
              'Content-Type': 'application/json'
@@ -254,6 +292,7 @@ function makeAMoveAi(type, xCoordinate, yCoordinate) {
 }
 
 function displayResponse(data) {
+    console.log(data);
     let board = data.board.square;
     for (let i = 0; i < board.length; i++) {
         for (let j = 0; j < board[i].length; j++) {
@@ -329,6 +368,8 @@ function displayResponse(data) {
                 playerTurn(turn, slot);
             }
         });
+        $(".player-x-img").classList.add("rainbow");
+        $(".player-o-img").classList.remove("rainbow");
     }
     if(playerType == "O" && (cur_chess[0] != cur_chess[1])) {
         console.log("O danh");
@@ -338,6 +379,8 @@ function displayResponse(data) {
                 playerTurn(turn, slot);
             }
         });
+        $(".player-x-img").classList.remove("rainbow");
+        $(".player-o-img").classList.add("rainbow");
     }
 }
 
@@ -395,15 +438,27 @@ function displayResponseAi(data) {
                 $(".label-lose").classList.remove("hide");
             }
         }, 1000)
+        setTimeout(() =>{
+            tic.forEach(element => {
+                element.onclick = function () {
+                    var slot = this.getAttribute("id");
+                    playerTurn(turn, slot);
+                }
+            });
+        }, 2000);
+    }
+    else {
+        tic.forEach(element => {
+            element.onclick = function () {
+                var slot = this.getAttribute("id");
+                playerTurn(turn, slot);
+            }
+        });
     }
     gameAi = true;
     gameOn = true;
-    tic.forEach(element => {
-        element.onclick = function () {
-            var slot = this.getAttribute("id");
-            playerTurn(turn, slot);
-        }
-    });
+    $(".player-x-img").classList.add("rainbow");
+    $(".player-o-img").classList.remove("rainbow");
 }
 
 var tic = $$('.tic');
@@ -520,5 +575,6 @@ function reset() {
         element.classList.remove("o");
         element.classList.remove("strong");
     });
+    load_charts();
 }
 

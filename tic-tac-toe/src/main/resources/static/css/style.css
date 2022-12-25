@@ -324,7 +324,8 @@ form .txt_field{
 .app__cont-heading {
     font-size: 2.6rem;
     color: var(--text-color);
-    margin-bottom: 100px;
+    margin-bottom: 16px;
+    padding-top: 184px;
 }
 
 .background-dif {
@@ -339,6 +340,15 @@ form .txt_field{
     list-style: none;
     padding-left: 0;
     border: 2px solid var(--secondary-color);
+    max-height: 500px;
+    overflow: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.rating__list::-webkit-scrollbar {
+  width: 0 !important;
+  display: none;
 }
 
 .rating__item {
@@ -389,7 +399,7 @@ form .txt_field{
 
 .game {
     background-color: rgba(0, 0, 0, 0.05);
-    padding-top: 8px;
+    margin-top: 8px;
     position: relative;
     display: block;
     min-height: 600px;
@@ -403,8 +413,23 @@ form .txt_field{
 
 .game__main {
     width: 100%;
-    height: 620px;
-    margin-top: 20px;
+    height: 646px;
+    padding-top: 20px;
+    position: relative;
+    background-color: #deeae8;
+}
+
+.exit-game {
+    position: absolute;
+    top: -64px;
+    right: 6px;
+    font-size: 3.6rem;
+    color: #ccc;
+}
+
+.exit-game:hover {
+    cursor: pointer;
+    opacity: 0.8;
 }
 
 #game-board{
@@ -440,7 +465,7 @@ form .txt_field{
 }
 
 .tic:hover {
-    background-color: var(--primary-color);
+    background-color: #c8e3ff;
     cursor: pointer;
 }
 
@@ -450,11 +475,11 @@ form .txt_field{
 }
 
 .o {
-    color: rgb(255, 115, 0) !important;
+    color: var(--chess-o-color) !important;
 }
 
 .x {
-    color: rgb(0, 4, 255) !important;
+    color: var(--chess-x-color) !important;
 }
 
 /* Auth-form */
@@ -516,6 +541,25 @@ form .txt_field{
     margin-top: 20px;
     margin-bottom: 12px;
 }
+
+.label-enter-id {
+    font-size: 1.6rem;
+    color: var(--text-color);
+    padding-top: 30px;
+}
+
+.label-enter-id span {
+    font-size: 1.2rem;
+    color: var(--secondary-color);
+}
+
+.wrap-btn-enter-id {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 16px;
+    margin-top: 12px;
+}
+
 
 .auth-form__outside {
     margin-top: 16px;
@@ -626,7 +670,7 @@ form .txt_field{
 }
 
 .strong {
-    background-color: #00e0f0;
+    background-color: #c8e3ff;
 }
 
 .guide {
@@ -648,10 +692,11 @@ form .txt_field{
 
 /* Player-infor */
 .player {
-    margin-top: 16px;
+    padding: 12px 0;
     display: flex;
     align-items: center;
     justify-content: center;
+    background-color: var(--silver-medal-color);
 }
 
 .wrap-player {
@@ -770,6 +815,64 @@ form .txt_field{
     transform-origin: top left;
     animation-delay: 1.5s;
 }
+
+.rainbow {
+    /* width: 400px;
+    height: 300px; */
+    border-radius: 10px;
+    border-radius: 50%;
+    padding: 0.2rem;
+    display: flex;
+
+    font-size: 1.5em;
+
+    --border-size: 0.3rem;
+    border: var(--border-size) solid transparent;
+
+    /* Paint an image in the border */
+    border-image: conic-gradient(
+        from var(--angle),
+        #d53e33 0deg 90deg,
+        #fbb300 90deg 180deg,
+        #377af5 180deg 270deg,
+        #399953 270deg 360deg
+      )
+      1 stretch;
+    background: rgb(255 255 255 / var(--opacity));
+  }
+
+  /* Animate when Houdini is available */
+  @supports (background: paint(houdini)) {
+    @property --opacity {
+      syntax: "<number>";
+      initial-value: 0.5;
+      inherits: false;
+    }
+
+    @property --angle {
+      syntax: "<angle>";
+      initial-value: 0deg;
+      inherits: false;
+    }
+
+    @keyframes opacityChange {
+      to {
+        --opacity: 1;
+      }
+    }
+
+    @keyframes rotate {
+      to {
+        --angle: 360deg;
+      }
+    }
+
+    .rainbow {
+      animation: rotate 4s linear infinite, opacityChange 3s infinite alternate;
+    }
+  }
+
+
 
 /* Footer */
 

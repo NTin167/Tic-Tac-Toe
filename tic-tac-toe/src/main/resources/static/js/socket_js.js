@@ -1,4 +1,4 @@
-const url = 'http://localhost:2020';
+const url = 'http://localhost:8080';
 let stompClient;
 let gameId;
 let playerType;
@@ -13,8 +13,18 @@ function connectToSocket(gameId) {
         stompClient.subscribe("/topic/game-progress/" + gameId, function (response) {
             let data = JSON.parse(response.body);
             console.log(data);
+            console.log(typeof data);
             displayResponse(data);
         })
+
+//        if(playerType == "X") {
+//                    setInterval(function(){
+//                        stompClient.subscribe("/topic/game-progress/" + gameId, function (response) {
+//                            let data = JSON.parse(response.body);
+//                            console.log(data);
+//                        })
+//                    }, 3000);
+//        }
     })
 }
 
@@ -93,6 +103,7 @@ function register(name, username, email, password, confirmpassword) {
                 $(".login-form").classList.remove("hide");
             }
             else {
+                console.log(data);
                 alert("Có lỗi xảy ra. Vui lòng thử lại!");
             }
         })
@@ -101,7 +112,6 @@ function register(name, username, email, password, confirmpassword) {
             alert("Vui lòng điền đầy đủ thông tin!");
         })
     }
-
 
 }
 
@@ -140,8 +150,102 @@ function login(username, password) {
             alert("Sai thông tin đăng nhập!");
         })
     }
-
 }
+
+function load_charts() {
+    fetch(url + "/game/getAllPlayer")
+        .then (response => response.json())
+        .then (data => {
+            let charts = data.sort((a, b) => {
+                return b.score - a.score;
+            })
+            let listRate = $(".rating__list");
+            let htmls = charts.map(function(chart) {
+                let findInd = charts.findIndex(ele => ele == chart);
+                if(findInd == 0){
+                    return `
+                        <li class="rating__item">
+                                <span class="rating__item-ranking">
+                                    ${findInd + 1}
+                                    <i class="gold-medal ranking-medal fa-solid fa-medal"></i>
+                                </span>
+                            <img src="http://vn.blog.kkday.com/wp-content/uploads/chup-anh-dep-bang-dien-thoai-25.jpg" alt="Avt" class="rating__item-avatar">
+                            <span class="rating__item-user-name">${chart.login}</span>
+                            <span class="rating__item-mark">
+                                ${chart.score}
+                                <span class="rating__item-mark-unit">đ</span>
+                            </span>
+                        </li>
+                    `;
+                }
+                else if(findInd == 1){
+                    return `
+                        <li class="rating__item background-dif">
+                                <span class="rating__item-ranking">
+                                    ${findInd + 1}
+                                    <i class="silver-medal ranking-medal fa-solid fa-medal"></i>
+                                </span>
+                            <img src="http://vn.blog.kkday.com/wp-content/uploads/chup-anh-dep-bang-dien-thoai-25.jpg" alt="Avt" class="rating__item-avatar">
+                            <span class="rating__item-user-name">${chart.login}</span>
+                            <span class="rating__item-mark">
+                                ${chart.score}
+                                <span class="rating__item-mark-unit">đ</span>
+                            </span>
+                        </li>
+                    `;
+                }
+                else if(findInd == 2){
+                    return `
+                        <li class="rating__item">
+                                <span class="rating__item-ranking">
+                                    ${findInd + 1}
+                                    <i class="bronze-medal ranking-medal fa-solid fa-medal"></i>
+                                </span>
+                            <img src="http://vn.blog.kkday.com/wp-content/uploads/chup-anh-dep-bang-dien-thoai-25.jpg" alt="Avt" class="rating__item-avatar">
+                            <span class="rating__item-user-name">${chart.login}</span>
+                            <span class="rating__item-mark">
+                                ${chart.score}
+                                <span class="rating__item-mark-unit">đ</span>
+                            </span>
+                        </li>
+                    `;
+                }
+                else if(findInd %2 == 1){
+                    return `
+                        <li class="rating__item background-dif">
+                                <span class="rating__item-ranking">
+                                    ${findInd + 1}
+                                </span>
+                            <img src="http://vn.blog.kkday.com/wp-content/uploads/chup-anh-dep-bang-dien-thoai-25.jpg" alt="Avt" class="rating__item-avatar">
+                            <span class="rating__item-user-name">${chart.login}</span>
+                            <span class="rating__item-mark">
+                                ${chart.score}
+                                <span class="rating__item-mark-unit">đ</span>
+                            </span>
+                        </li>
+                    `;
+                }
+                else {
+                    return `
+                        <li class="rating__item">
+                                <span class="rating__item-ranking">
+                                    ${findInd + 1}
+                                </span>
+                            <img src="http://vn.blog.kkday.com/wp-content/uploads/chup-anh-dep-bang-dien-thoai-25.jpg" alt="Avt" class="rating__item-avatar">
+                            <span class="rating__item-user-name">${chart.login}</span>
+                            <span class="rating__item-mark">
+                                ${chart.score}
+                                <span class="rating__item-mark-unit">đ</span>
+                            </span>
+                        </li>
+                    `;
+                }
+            });
+            listRate.innerHTML =htmls.join('');
+        })
+        .catch (error => console.log(error))
+}
+load_charts();
 
 function create_game(loginName) {
     if (loginName == null || loginName === '') {
@@ -179,7 +283,17 @@ function create_game(loginName) {
 //                    clearInterval(inte);
 //                }
 //            }, 1000)
-           gameOn = true;
+            closeModal();
+            $(".game__select").classList.add("hide");
+            $(".enter-id-room").classList.add("hide");
+            $(".game__main").classList.remove("hide");
+            $(".player").classList.remove("hide");
+            if(playerType == "X"){
+                $(".x-name").innerText = loginName;
+            }
+            $(".player-x-img").classList.add("rainbow");
+            $(".player-o-img").classList.remove("rainbow");
+            gameOn = true;
         })
         .catch(error => console.log(error))
     }
@@ -234,6 +348,13 @@ function connectToRandom(loginName) {
             reset();
             connectToSocket(gameId);
             alert("Congrats you're playing with: " + data.player1.login);
+            $(".player").classList.remove("hide");
+            if(playerType == "O"){
+                $(".x-name").innerText = data.player1.login;
+                $(".o-name").innerText = loginName;
+            }
+            $(".player-x-img").classList.add("rainbow");
+            $(".player-o-img").classList.remove("rainbow");
         })
         .catch(error => {
             console.log(error);
@@ -243,38 +364,43 @@ function connectToRandom(loginName) {
 }
 
 
-
-function connectToSpecificGame() {
-    let login = document.getElementById("login").value;
-    if (login == null || login === '') {
-        alert("Please enter login");
-    } else {
-        let gameId = document.getElementById("game_id").value;
-        if (gameId == null || gameId === '') {
-            alert("Please enter game id");
-        }
-        fetch(url + "/game/connect", {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                 "player": {
-                     "login": login
-                 },
-                 "gameId": gameId
-            })
+function connectToSpecificGame(loginName, gameId) {
+    fetch(url + "/game/connect", {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+             "player": {
+                 "login": loginName
+             },
+             "gameId": gameId
         })
-            .then(response => response.json())
-            .then(data => {
-                gameId = data.gameId;
-                playerType = 'O';
-                reset();
-                connectToSocket(gameId);
-                alert("Congrats you're playing with: " + data.player1.login);
-            })
-            .catch(error => console.log(error))
-    }
+    })
+        .then(response => response.json())
+        .then(data => {
+            gameId = data.gameId;
+            playerType = 'O';
+            reset();
+            connectToSocket(gameId);
+            alert("Congrats you're playing with: " + data.player1.login);
+            closeModal();
+            $(".enter-id-room").classList.add("hide");
+            $(".game__select").classList.add("hide");
+            $(".game__main").classList.remove("hide");
+             $(".player").classList.remove("hide");
+            if(playerType == "O"){
+                $(".x-name").innerText = data.player1.login;
+                $(".o-name").innerText = loginName;
+            }
+            $(".player-x-img").classList.add("rainbow");
+            $(".player-o-img").classList.remove("rainbow");
+        })
+        .catch(error => {
+            console.log(error);
+            alert("Nhập sai id phòng!");
+        })
+
 }
 
 
